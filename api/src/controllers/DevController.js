@@ -31,7 +31,7 @@ module.exports = {
 
         const loggedDev = await Dev.findById(user);
         
-        /*
+        
         const users = await Dev.find({
             $and: [
                 { _id: {$ne: user } },
@@ -39,8 +39,6 @@ module.exports = {
                 { _id: {$nin: loggedDev.dislikes }}
             ],
         });
-        */
-
-        return res.json(loggedDev);
+        return res.json(users);
     }
 }
