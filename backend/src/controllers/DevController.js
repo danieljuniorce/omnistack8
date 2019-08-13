@@ -1,3 +1,4 @@
+// @ts-nocheck
 const axios = require('axios');
 const Dev = require('./../models/Dev');
 
@@ -11,6 +12,7 @@ module.exports = {
             return res.json(userExists);
         }
 
+        // @ts-ignore
         const response = await axios.get(`https://api.github.com/users/${username}`);
 
         const { name, bio, avatar_url: avatar } = response.data;
@@ -35,7 +37,9 @@ module.exports = {
         const users = await Dev.find({
             $and: [
                 { _id: {$ne: user } },
+
                 { _id: {$nin: loggedDev.likes }},
+ 
                 { _id: {$nin: loggedDev.dislikes }}
             ],
         });

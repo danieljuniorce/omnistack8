@@ -1,14 +1,37 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+
+import api from '../services/api';
+
 
 import Logo from '../assets/logo.png';
 
 export default function Login({ navigation }) {
   const [user, setUser] = useState('');
+  useEffect(() => {
+    AsyncStorage.getItem('user').then(user => {
+      if (user) {
+        navigation.navigate('Main', { user });
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+  }, []);
 
-  function handlerLogin() {
-    navigation.navigate('Main');
+
+  //Function para executar ao inserir o usuário no TextInput
+  async function handlerLogin() {
+    const requestResponse = await api.get('/devs', {
+      username: user
+    });
+
+    const { _id } = requestResponse.data;
+
+    await AsyncStorage.setItem('user', _id);
+
+    navigation.navigate('Main', { _id });
   }
 
   return (
@@ -18,8 +41,8 @@ export default function Login({ navigation }) {
       style={styles.container}
     >
 
-      <Image source={Logo}/>
-      
+      <Image source={Logo} />
+
       <TextInput
         autoCapitalize='none'
         autoCorrect={false}
@@ -27,7 +50,7 @@ export default function Login({ navigation }) {
         placeholderTextColor='#999'
         style={styles.input}
         value={user}
-        onChange={setUser}
+        onChangeText={setUser}
       />
 
       <TouchableOpacity
