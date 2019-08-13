@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import api from '../services/api';
 
-
 import Logo from '../assets/logo.png';
 
 export default function Login({ navigation }) {
@@ -15,15 +14,12 @@ export default function Login({ navigation }) {
       if (user) {
         navigation.navigate('Main', { user });
       }
-    }).catch(err => {
-      console.log(err);
     });
   }, []);
 
-
   //Function para executar ao inserir o usuário no TextInput
   async function handlerLogin() {
-    const requestResponse = await api.get('/devs', {
+    const requestResponse = await api.post('/devs', {
       username: user
     });
 
@@ -31,7 +27,7 @@ export default function Login({ navigation }) {
 
     await AsyncStorage.setItem('user', _id);
 
-    navigation.navigate('Main', { _id });
+    navigation.navigate('Main', { user: _id });
   }
 
   return (
